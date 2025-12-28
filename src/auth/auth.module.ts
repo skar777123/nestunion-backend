@@ -7,9 +7,14 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './jwt.strategy';
+import { MongooseModule } from '@nestjs/mongoose';
+import { OtpSchema } from '../schemas/otp.schema';
+import { EmailModule } from '../email/email.module';
 
 @Module({
   imports: [
+    MongooseModule.forFeature([{ name: 'Otp', schema: OtpSchema }]),
+    EmailModule,
     UsersModule,
     PassportModule,
     JwtModule.registerAsync({

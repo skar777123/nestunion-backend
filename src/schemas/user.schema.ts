@@ -9,6 +9,9 @@ export class User {
   @Prop({ unique: true, index: true })
   email: string;
 
+  @Prop({ unique: true, index: true })
+  nestId: string; // Generated ID (e.g., NEST2025U0001)
+
   @Prop({ select: false }) // Hide password by default
   password?: string;
 
@@ -21,8 +24,8 @@ export class User {
   @Prop()
   photo?: string; // URL
 
-  @Prop()
-  role: 'user' | 'admin' = 'user';
+  @Prop({ type: [String], enum: ['user', 'admin', 'provider'], default: ['user'] })
+  roles: string[];
 
   // Profile Details
   @Prop()
@@ -47,7 +50,7 @@ export class User {
   idCardGenerated: boolean;
 
   @Prop({ type: Object })
-  metadata?: Record<string, any>; // Flex field for future needs
+  metadata?: Record<string, any>;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

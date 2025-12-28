@@ -4,12 +4,32 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Company, CompanyDocument } from '../schemas/company.schema';
 
+import { IdGeneratorService } from '../id-generator/id-generator.service';
+
 @Injectable()
 export class CompaniesService {
-    constructor(@InjectModel(Company.name) private companyModel: Model<CompanyDocument>) { }
+    constructor(
+        @InjectModel(Company.name) private companyModel: Model<CompanyDocument>,
+        private idGenerator: IdGeneratorService
+    ) { }
+
+    private getTagByCategory(category: string): string {
+        switch (category) {
+            case 'Auto / Taxi': return 'AT';
+            case 'Dukandar': return 'DK';
+            case 'Labour': return 'LB';
+            case 'Delivery': return 'DL';
+            case 'Farmer': return 'FR';
+            case 'Electrician / Plumber': return 'EP';
+            default: return 'PR'; // Generic Provider
+        }
+    }
 
     async create(createCompanyDto: any): Promise<Company> {
-        const createdCompany = new this.companyModel(createCompanyDto);
+        const tag = this.getTagByCategory(createCompanyDto.category || createCompanyDto.community); // handling both field names just in case
+        const nestId = await this.idGenerator.generateId('provider', tag);
+
+        const createdCompany = new this.companyModel({ ...createCompanyDto, nestId });
         return createdCompany.save();
     }
 

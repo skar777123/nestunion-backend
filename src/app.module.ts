@@ -10,6 +10,9 @@ import { BankAccountsModule } from './bank-accounts/bank-accounts.module';
 import { CommunitiesModule } from './communities/communities.module';
 import { AdminModule } from './admin/admin.module';
 import { TransactionsModule } from './transactions/transactions.module';
+import { IdGeneratorModule } from './id-generator/id-generator.module';
+import { ProvidersModule } from './providers/providers.module';
+import { InteractionsModule } from './interactions/interactions.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 
@@ -33,7 +36,11 @@ import { MongooseModule } from '@nestjs/mongoose';
     BankAccountsModule,
     CommunitiesModule,
     AdminModule,
-    TransactionsModule
+    AdminModule,
+    TransactionsModule,
+    ProvidersModule,
+    InteractionsModule,
+    IdGeneratorModule
   ],
   controllers: [AppController],
   providers: [AppService],
