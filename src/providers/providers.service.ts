@@ -14,19 +14,19 @@ export class ProvidersService {
 
     private getTagByCategory(category: string): string {
         switch (category) {
-            case 'Auto / Taxi': return 'AT';
-            case 'Dukandar': return 'DK';
-            case 'Labour': return 'LB';
-            case 'Delivery': return 'DL';
-            case 'Farmer': return 'FR';
-            case 'Electrician / Plumber': return 'EP';
-            default: return 'PR';
+            case 'Auto / Taxi': return 'AUT';
+            case 'Dukandar': return 'DUK';
+            case 'Labour': return 'LAB';
+            case 'Delivery': return 'DEL';
+            case 'Farmer': return 'FAR';
+            case 'Electrician / Plumber': return 'SKL'; // Skilled
+            default: return 'PRO'; // Generic Provider
         }
     }
 
     async create(createProviderDto: any): Promise<Provider> {
         const tag = this.getTagByCategory(createProviderDto.category);
-        const nestId = await this.idGenerator.generateId('provider', tag);
+        const nestId = await this.idGenerator.generateProfessionalId(tag);
 
         const createdProvider = new this.providerModel({ ...createProviderDto, nestId });
         return createdProvider.save();

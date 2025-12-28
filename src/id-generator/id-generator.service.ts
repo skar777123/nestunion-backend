@@ -10,33 +10,30 @@ export class IdGeneratorService {
         @InjectModel(Counter.name) private counterModel: Model<CounterDocument>,
     ) { }
 
-    async generateId(prefix: string, tag: string): Promise<string> {
-        const sequenceName = `${prefix}_${tag}`.toLowerCase();
+    // Logic: NN-TAG-YY-SEQUENCE (e.g. NN-LAB-25-000123)
+    async generateProfessionalId(tag: string): Promise<string> {
+        // Tag should be 3 letters, e.g., 'USR', 'LAB'
+        const upperTag = tag.toUpperCase();
+        const yearFull = new Date().getFullYear();
+        const yearShort = yearFull.toString().slice(-2); // "25" for 2025
 
-        // Find and update the counter for this specific sequence
+        // Key to track sequence: e.g. 'seq_LAB_2025' to reset or continue per year/tag?
+        // Usually sequence is global or per tag. The image implies "000123" is unique number.
+        // Let's assume unique sequence per TAG.
+        const sequenceKey = `professional_${upperTag}`;
+
         const counter = await this.counterModel.findByIdAndUpdate(
-            sequenceName,
-            { $inc: { seq: 1 } },
-            { new: true, upsert: true }
-        );
-
-        const year = new Date().getFullYear();
-        const sequence = counter.seq.toString().padStart(4, '0');
-
-        // Format: NEST + YEAR + TAG + SEQ (e.g., NEST2025U0001)
-        return `NEST${year}${tag}${sequence}`;
-    }
-
-    // New simpler format for Users if preferred: NEST + 6 digits
-    // e.g., NEST000001, NEST000002
-    async generateSimpleId(key: string): Promise<string> {
-        const counter = await this.counterModel.findByIdAndUpdate(
-            key, // e.g. 'user_global'
+            sequenceKey,
             { $inc: { seq: 1 } },
             { new: true, upsert: true }
         );
 
         const sequence = counter.seq.toString().padStart(6, '0');
-        return `NEST${sequence}`;
+
+        // NN-TAG-YY-SEQ
+        return `NN-${upperTag}-${yearShort}-${sequence}`;
     }
+
+    // Keeping legacy/simple methods just in case, or for other entities if needed.
+    // ...
 }
