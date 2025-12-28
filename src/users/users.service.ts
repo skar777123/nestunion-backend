@@ -13,7 +13,7 @@ export class UsersService {
     ) { }
 
     async create(createUserDto: any): Promise<User> {
-        const nestId = await this.idGenerator.generateId('user', 'U');
+        const nestId = await this.idGenerator.generateSimpleId('user_global');
         const createdUser = new this.userModel({ ...createUserDto, nestId });
         return createdUser.save();
     }

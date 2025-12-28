@@ -26,4 +26,17 @@ export class IdGeneratorService {
         // Format: NEST + YEAR + TAG + SEQ (e.g., NEST2025U0001)
         return `NEST${year}${tag}${sequence}`;
     }
+
+    // New simpler format for Users if preferred: NEST + 6 digits
+    // e.g., NEST000001, NEST000002
+    async generateSimpleId(key: string): Promise<string> {
+        const counter = await this.counterModel.findByIdAndUpdate(
+            key, // e.g. 'user_global'
+            { $inc: { seq: 1 } },
+            { new: true, upsert: true }
+        );
+
+        const sequence = counter.seq.toString().padStart(6, '0');
+        return `NEST${sequence}`;
+    }
 }
